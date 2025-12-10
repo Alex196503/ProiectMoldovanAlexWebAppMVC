@@ -20,10 +20,72 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
         }
 
         // GET: Cars
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string SearchString)
         {
-            var proiectMoldovanAlexWebAppMVCContext = _context.Car.Include(c => c.Brand).Include(c => c.Engine);
-            return View(await proiectMoldovanAlexWebAppMVCContext.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["SeatsParm"] = sortOrder == "Seats" ? "seats_desc" : "Seats";
+            ViewData["YearFabricationParm"] = sortOrder == "YearFabrication" ? "year_fabrication" : "YearFabrication";
+            ViewData["BrandNameParm"] = String.IsNullOrEmpty(sortOrder) ? "brandname_desc" : "";
+            ViewData["EngineTypeParm"] = String.IsNullOrEmpty(sortOrder) ? "engine_type" : "";
+            ViewData["ColorParm"] = String.IsNullOrEmpty(sortOrder) ? "color" : "";
+            ViewData["CurrentFilter"] = SearchString;
+            var cars = from c in _context.Car
+                       join b in _context.Brand on c.BrandID equals b.BrandID
+                       join e in _context.Engine on c.EngineID equals e.EngineID
+                       select new CarViewModel
+                       {
+                           ID = c.ID,
+                           Name = c.Name,
+                           Price = c.Price,
+                           BrandName = b.Name,
+                           EngineType = e.Type,
+                           Color = c.Color,
+                           Seats = c.Seats,
+                           YearFabrication = c.YearFabrication
+                       };
+            if(!String.IsNullOrEmpty(SearchString))
+            {
+                cars = cars.Where(s => s.Name.Contains(SearchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    cars = cars.OrderByDescending(c => c.Name);
+                    break;
+                case "brandname_desc":
+                    cars = cars.OrderByDescending(c => c.BrandName);
+                    break;
+                case "engine_type":
+                    cars = cars.OrderByDescending(c => c.EngineType);
+                    break;
+                case "color":
+                    cars = cars.OrderByDescending(c => c.Color);
+                    break;
+                case "Price":
+                    cars = cars.OrderBy(c => c.Price);
+                    break;
+                case "Seats":
+                    cars = cars.OrderBy(c => c.Seats);
+                    break;
+                case "seats_desc":
+                    cars = cars.OrderByDescending(c => c.Seats);
+                    break;
+                case "YearFabrication":
+                    cars = cars.OrderBy(c => c.YearFabrication);
+                    break;
+                case "year_fabrication":     
+                    cars = cars.OrderByDescending(c => c.YearFabrication);
+                    break;
+                case "price_desc":
+                    cars = cars.OrderByDescending(c => c.Price);
+                    break;
+                default:
+                    cars = cars.OrderBy(c => c.Name);
+                    break;
+            }
+            return View(await cars.AsNoTracking().ToListAsync());
         }
 
         // GET: Cars/Details/5
@@ -37,6 +99,11 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             var car = await _context.Car
                 .Include(c => c.Brand)
                 .Include(c => c.Engine)
+                .Include(c => c.Orders)
+                .ThenInclude(o => o.Owner)
+                .Include(c=>c.Orders)
+                .ThenInclude(o => o.OrderStatus)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (car == null)
             {

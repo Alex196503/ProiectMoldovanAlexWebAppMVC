@@ -52,6 +52,34 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Seats)
         </dd>
+        <dd class="col-sm-10">
+            @if (Model.Orders != null && Model.Orders.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Owner Name</th>
+                            <th>Order Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <tr>
+                                <td>@order.Owner?.Name</td>
+                                <td>@order.OrderDate.ToShortDateString()</td>
+                                <td>@order.OrderStatus?.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No orders for this car.</p>
+            }
+        </dd>
     </dl>
 </div>
 <div>

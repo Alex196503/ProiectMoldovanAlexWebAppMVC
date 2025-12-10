@@ -19,6 +19,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Data
         public DbSet<ProiectMoldovanAlexWebAppMVC.Models.Owner> Owner { get; set; } = default!;
         public DbSet<ProiectMoldovanAlexWebAppMVC.Models.Engine> Engine { get; set; } = default!;
         public DbSet<ProiectMoldovanAlexWebAppMVC.Models.Order> Order { get; set; } = default!;
+        public DbSet <ProiectMoldovanAlexWebAppMVC.Models.OrderStatus>OrderStatus { get; set; } = default!;
 
     }
 }

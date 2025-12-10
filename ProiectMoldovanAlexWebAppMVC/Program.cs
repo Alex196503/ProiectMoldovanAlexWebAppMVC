@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProiectMoldovanAlexWebAppMVC.Data;
+using ProiectMoldovanAlexWebAppMVC.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ProiectMoldovanAlexWebAppMVCContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProiectMoldovanAlexWebAppMVCContext") ?? throw new InvalidOperationException("Connection string 'ProiectMoldovanAlexWebAppMVCContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-var app = builder.Build();
+builder.Services.AddHttpClient<ICarPricePredictionService, PricePredictionService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:52941");
+}); var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

@@ -1,7 +1,9 @@
-using System.Diagnostics;
+using Azure;
+using Azure.Core;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using ProiectMoldovanAlexWebAppMVC.Models;
-
+using System.Diagnostics;
 namespace ProiectMoldovanAlexWebAppMVC.Controllers
 {
     public class HomeController : Controller
@@ -11,15 +13,5 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

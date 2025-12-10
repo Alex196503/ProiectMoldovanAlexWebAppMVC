@@ -1,0 +1,72 @@
+﻿@model ProiectMoldovanAlexWebAppMVC.Models.CarPricePredictionInputViewModel
+
+@{
+    ViewData["Title"] = "Car Price Prediction";
+}
+
+<h2>Car Price Prediction</h2>
+
+<form asp-action="Index" method="post">
+    <div>
+        <label>Car Name:</label>
+        <input asp-for="Car_Name" />
+        <span asp-validation-for="Car_Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Year:</label>
+        <input type="number" asp-for="Year" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Present Price (in Lakhs):</label>
+        <input type="number" step="0.01" asp-for="Present_Price" />
+        <span asp-validation-for="Present_Price" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Kms Driven:</label>
+        <input type="number" asp-for="Kms_Driven" />
+        <span asp-validation-for="Kms_Driven" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Full Type:</label>
+        <input asp-for="Full_Type" />
+        <span asp-validation-for="Full_Type" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Seller Type:</label>
+        <input asp-for="Seller_Type" />
+        <span asp-validation-for="Seller_Type" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Transmission:</label>
+        <input asp-for="Transmission" />
+        <span asp-validation-for="Transmission" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Owner:</label>
+        <input type="number" asp-for="Owner" />
+        <span asp-validation-for="Owner" class="text-danger"></span>
+    </div>
+
+    <button type="submit">Predict Price</button>
+</form>
+
+@if (Model.Selling_Price > 0)
+{
+    <div style="margin-top:20px;">
+        <h3>Predicted Selling Price: @Model.Selling_Price.ToString("0.00") Lakhs</h3>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

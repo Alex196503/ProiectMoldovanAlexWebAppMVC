@@ -22,7 +22,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var proiectMoldovanAlexWebAppMVCContext = _context.Order.Include(o => o.Car).Include(o => o.Owner);
+            var proiectMoldovanAlexWebAppMVCContext = _context.Order.Include(o => o.Car).Include(o => o.Owner).Include(o=>o.OrderStatus);
             return View(await proiectMoldovanAlexWebAppMVCContext.ToListAsync());
         }
 
@@ -37,6 +37,8 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             var order = await _context.Order
                 .Include(o => o.Car)
                 .Include(o => o.Owner)
+                .Include(o=>o.OrderStatus)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
@@ -51,6 +53,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
         {
             ViewData["CarID"] = new SelectList(_context.Car, "ID", "Name");
             ViewData["OwnerID"] = new SelectList(_context.Owner, "OwnerID", "Name");
+            ViewData["OrderStatusID"] = new SelectList(_context.OrderStatus, "ID", "Name");
             return View();
         }
 
@@ -59,7 +62,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,OwnerID,CarID,OrderDate,Status")] Order order)
+        public async Task<IActionResult> Create([Bind("OrderID,OwnerID,CarID,OrderDate,OrderStatusID")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -69,6 +72,8 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             }
             ViewData["CarID"] = new SelectList(_context.Car, "ID", "Name", order.CarID);
             ViewData["OwnerID"] = new SelectList(_context.Owner, "OwnerID", "Name", order.OwnerID);
+            ViewData["OrderStatusID"] = new SelectList(_context.OrderStatus, "ID", "Name", order.OrderStatusID); // adăugat
+
             return View(order);
         }
 
@@ -87,6 +92,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             }
             ViewData["CarID"] = new SelectList(_context.Car, "ID", "Name", order.CarID);
             ViewData["OwnerID"] = new SelectList(_context.Owner, "OwnerID", "Name", order.OwnerID);
+            ViewData["OrderStatusID"] = new SelectList(_context.OrderStatus, "ID", "Name", order.OrderStatusID); // adăugat
             return View(order);
         }
 
@@ -95,7 +101,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,OwnerID,CarID,OrderDate,Status")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderID,OwnerID,CarID,OrderDate,OrderStatusID")] Order order)
         {
             if (id != order.OrderID)
             {
@@ -124,6 +130,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             }
             ViewData["CarID"] = new SelectList(_context.Car, "ID", "Name", order.CarID);
             ViewData["OwnerID"] = new SelectList(_context.Owner, "OwnerID", "Name", order.OwnerID);
+            ViewData["OrderStatusID"] = new SelectList(_context.OrderStatus, "ID", "Name", order.OrderStatusID); // adăugat
             return View(order);
         }
 
@@ -138,6 +145,7 @@ namespace ProiectMoldovanAlexWebAppMVC.Controllers
             var order = await _context.Order
                 .Include(o => o.Car)
                 .Include(o => o.Owner)
+                .Include(o=>o.OrderStatus)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
